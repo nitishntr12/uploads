@@ -1,0 +1,265 @@
+<script src="../add-concept/add-concept.component.ts"></script>
+<div  *ngIf="dataGoingToServer" class="loader" style="z-index: 10;position: absolute; left:50%; top: 50%; height: 25%; width: 10%;">
+  <img src="../../assets/loader.gif" style="width: 100%;height: 100%;">
+</div>
+
+
+<script src="add-problem.component.ts"></script>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="margin-20">
+        <h4>Add Problem</h4>
+      </div>
+
+      <div class="margin-20">
+        <md-toolbar style="color:blue"><h4>Topic Selected is : {{topicName}}</h4></md-toolbar>
+
+      </div>
+
+      <form [formGroup]="addProblemForm" novalidate (ngSubmit)="save(addProblemForm.value)">
+        <div class="form-group">
+          <label>Problem Name</label>
+          <textarea style="height: 45px" type="text" class="form-control" formControlName="Name" ></textarea>
+          <small *ngIf="!addProblemForm.controls.Name.valid" class="text-danger">
+            Name is required (minimum 5 characters).
+          </small>
+        </div>
+        <div class="form-group">
+          <label>Order</label>
+          <input type="number" class="form-control" formControlName="Order">
+          <small *ngIf="!addProblemForm.controls.Order.valid" class="text-danger">
+            Required
+          </small>
+        </div>
+
+
+        <div class="form-group" style="display: flex;justify-content: center;flex-direction: column">
+          <label >Level</label>
+
+          <md-radio-group class="example-radio-group" formControlName="Level">
+            <md-radio-button style="display: table-row-group" class="example-radio-button"  *ngFor="let level of levels"  [value]="level">
+             Level {{level}}
+            </md-radio-button>
+          </md-radio-group>
+          <small [hidden]="addProblemForm.controls.Level.valid" class="text-danger">
+            Required
+          </small>
+        </div>
+
+        <div class="form-group" style="display: flex;justify-content: center;flex-direction: column">
+          <label >Choose Question Type</label>
+
+          <md-radio-group class="example-radio-group" formControlName="TypeOfQuestion" [(ngModel)]="TypeSelected">
+            <md-radio-button style="display: table-row-group" class="example-radio-button"  *ngFor="let type of types"  [value]="type">
+              {{type}}
+            </md-radio-button>
+          </md-radio-group>
+          <small [hidden]="addProblemForm.controls.TypeOfQuestion.valid" class="text-danger">
+            Required
+          </small>
+        </div>
+
+
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea type="text" style="height: 50px" class="form-control" formControlName="Description"></textarea>
+          <small *ngIf="!addProblemForm.controls.Description.valid" class="text-danger">
+            Required
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Question Tag</label>
+          <textarea type="text" style="height: 50px" class="form-control" formControlName="QuestionTag"></textarea>
+          <small *ngIf="!addProblemForm.controls.QuestionTag.valid" class="text-danger">
+            Required
+          </small>
+        </div>
+
+
+
+
+
+        <!--addresses-->
+
+        <div class="form-group" formGroupName="ProblemJson">
+          <label>Question </label>
+          <div formArrayName="QuestionText">
+            <div *ngFor="let questionText of addProblemForm.controls.ProblemJson.controls.QuestionText.controls; let i=index" class="panel panel-default">
+              <div class="panel-heading">
+                <span>Question Part {{i + 1}}</span>
+                <span class="glyphicon glyphicon-remove pull-right" *ngIf="addProblemForm.controls.ProblemJson.controls.QuestionText.controls.length > 1" (click)="removeProblemPart('QuestionText',i)"></span>
+              </div>
+              <div class="panel-body" [formGroupName]="i">
+                <app-problem-text [baseImageUrl]="baseImageUrl" [group]="addProblemForm.controls.ProblemJson.controls.QuestionText.controls[i]"></app-problem-text>
+              </div>
+            </div>
+          </div>
+
+          <div class="margin-20">
+            <a (click)="addQuestionPart('QuestionText')" style="cursor: default">
+              Add another Question Part +
+            </a>
+          </div>
+
+
+          <label>Option A</label>
+          <div formArrayName="Option1Text">
+            <div *ngFor="let option1Text of addProblemForm.controls.ProblemJson.controls.Option1Text.controls; let i=index" class="panel panel-default">
+              <div class="panel-heading">
+                <span>Option A part {{i + 1}}</span>
+                <span class="glyphicon glyphicon-remove pull-right" *ngIf="addProblemForm.controls.ProblemJson.controls.Option1Text.controls.length > 1" (click)="removeProblemPart('Option1Text',i)"></span>
+              </div>
+              <div class="panel-body" [formGroupName]="i">
+                <app-problem-text [baseImageUrl]="baseImageUrl" [group]="addProblemForm.controls.ProblemJson.controls.Option1Text.controls[i]"></app-problem-text>
+              </div>
+            </div>
+          </div>
+
+          <div class="margin-20">
+            <a (click)="addQuestionPart('Option1Text')" style="cursor: default">
+              Add another Option A  Part +
+            </a>
+          </div>
+
+
+          <label>Option B</label>
+          <div formArrayName="Option2Text">
+            <div *ngFor="let option2Text of addProblemForm.controls.ProblemJson.controls.Option2Text.controls; let i=index" class="panel panel-default">
+              <div class="panel-heading">
+                <span>Option B part {{i + 1}}</span>
+                <span class="glyphicon glyphicon-remove pull-right" *ngIf="addProblemForm.controls.ProblemJson.controls.Option2Text.controls.length > 1" (click)="removeProblemPart('Option2Text',i)"></span>
+              </div>
+              <div class="panel-body" [formGroupName]="i">
+                <app-problem-text [baseImageUrl]="baseImageUrl" [group]="addProblemForm.controls.ProblemJson.controls.Option2Text.controls[i]"></app-problem-text>
+              </div>
+            </div>
+          </div>
+
+          <div class="margin-20">
+            <a (click)="addQuestionPart('Option2Text')" style="cursor: default">
+              Add another OptionB Part +
+            </a>
+          </div>
+
+
+
+          <label>Option C </label>
+          <div formArrayName="Option3Text">
+            <div *ngFor="let option3Text of addProblemForm.controls.ProblemJson.controls.Option3Text.controls; let i=index" class="panel panel-default">
+              <div class="panel-heading">
+                <span>OptionC part{{i + 1}}</span>
+                <span class="glyphicon glyphicon-remove pull-right" *ngIf="addProblemForm.controls.ProblemJson.controls.Option3Text.controls.length > 1" (click)="removeProblemPart('Option3Text',i)"></span>
+              </div>
+              <div class="panel-body" [formGroupName]="i">
+                <app-problem-text [baseImageUrl]="baseImageUrl" [group]="addProblemForm.controls.ProblemJson.controls.Option3Text.controls[i]"></app-problem-text>
+              </div>
+            </div>
+          </div>
+
+          <div class="margin-20">
+            <a (click)="addQuestionPart('Option3Text')" style="cursor: default">
+              Add another OptionC Part +
+            </a>
+          </div>
+
+
+          <label>Option D</label>
+          <div formArrayName="Option4Text">
+            <div *ngFor="let option4Text of addProblemForm.controls.ProblemJson.controls.Option4Text.controls; let i=index" class="panel panel-default">
+              <div class="panel-heading">
+                <span>Option D part {{i + 1}}</span>
+                <span class="glyphicon glyphicon-remove pull-right" *ngIf="addProblemForm.controls.ProblemJson.controls.Option4Text.controls.length > 1" (click)="removeProblemPart('Option4Text',i)"></span>
+              </div>
+              <div class="panel-body" [formGroupName]="i">
+                <app-problem-text [baseImageUrl]="baseImageUrl" [group]="addProblemForm.controls.ProblemJson.controls.Option4Text.controls[i]"></app-problem-text>
+              </div>
+            </div>
+          </div>
+
+          <div class="margin-20">
+            <a (click)="addQuestionPart('Option2Text')" style="cursor: default">
+              Add another Option D Part +
+            </a>
+          </div>
+
+
+          <label>Solution </label>
+          <div formArrayName="SolutionText">
+            <div *ngFor="let solutionText of addProblemForm.controls.ProblemJson.controls.SolutionText.controls; let i=index" class="panel panel-default">
+              <div class="panel-heading">
+                <span>Solution Part {{i + 1}}</span>
+                <span class="glyphicon glyphicon-remove pull-right" *ngIf="addProblemForm.controls.ProblemJson.controls.SolutionText.controls.length > 1" (click)="removeProblemPart('SolutionText',i)"></span>
+              </div>
+              <div class="panel-body" [formGroupName]="i">
+                <app-problem-text [baseImageUrl]="baseImageUrl" [group]="addProblemForm.controls.ProblemJson.controls.SolutionText.controls[i]"></app-problem-text>
+              </div>
+            </div>
+          </div>
+
+          <div class="margin-20">
+            <a (click)="addQuestionPart('SolutionText')" style="cursor: default">
+              Add another Solution Part +
+            </a>
+          </div>
+
+          <div class="form-group" style="display: flex;justify-content: center;flex-direction: column" *ngIf="TypeSelected==types[0]">
+            <label >Answer Key</label>
+
+            <md-radio-group class="example-radio-group" formControlName="AnswerKeySingleCorrect">
+              <md-radio-button style="display: table-row-group" class="example-radio-button"  *ngFor="let key of keys"  [value]="key">
+                {{key }}
+              </md-radio-button>
+            </md-radio-group>
+            <small [hidden]="addProblemForm.controls.ProblemJson.controls.AnswerKeySingleCorrect.valid" class="text-danger">
+              Required
+            </small>
+          </div>
+
+          <div class="form-group" formGroupName="AnswerKeyMultipleCorrect" style="display: flex;justify-content: center;flex-direction: column" *ngIf="TypeSelected==types[1]">
+            <label >Answer Key</label>
+
+            <!--<md-radio-group class="example-radio-group" formControlName="AnswerKeyMultipleCorrect">-->
+              <!--<md-radio-button style="display: table-row-group" class="example-radio-button"  *ngFor="let key of keys"  [value]="key">-->
+                <!--{{key }}-->
+              <!--</md-radio-button>-->
+            <!--</md-radio-group>-->
+
+            <md-checkbox class="example-margin" formControlName="A">Option A</md-checkbox>
+            <md-checkbox class="example-margin" formControlName="B">Option B</md-checkbox>
+            <md-checkbox class="example-margin" formControlName="C">Option C </md-checkbox>
+            <md-checkbox class="example-margin" formControlName="D">Option D</md-checkbox>
+
+
+            <small [hidden]="addProblemForm.controls.ProblemJson.controls.AnswerKeyMultipleCorrect.valid" class="text-danger">
+              Required
+            </small>
+          </div>
+
+
+
+        </div>
+
+
+
+        <div style="margin: 2%">
+          <button style="margin-left: 20%" md-raised-button color="primary" type="submit"  [disabled]="!addProblemForm.valid">Submit</button>
+          <button style="margin-left: 46%" md-raised-button color="warn" (click)="cancelClicked()" >Cancel</button>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="margin-20">
+          <md-toolbar color="primary"><div *ngIf="GreetingMessage"> {{GreetingMessage|json}}</div></md-toolbar>
+
+          <div>addProblemForm details:-</div>
+          <pre>Is addProblemForm valid?: <br>{{addProblemForm.valid | json}}</pre>
+          <pre>form value: <br>{{addProblemForm.value | json}}</pre>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

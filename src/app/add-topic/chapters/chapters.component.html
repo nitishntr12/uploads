@@ -1,0 +1,31 @@
+<div *ngIf="data.length==0" class="loader" style="position: absolute;top: 0px; left: 0px;margin-left: 50%;margin-top: 50%;width:40px;height:40px">
+  <img src="../../../assets/loader.gif" style="width: 100%;height: 100%;">
+
+</div>
+<div class="row">
+  <div style="display: flex; justify-content: center; padding: 3%">
+    <input style="text-align: center" *ngIf="config.filtering" placeholder="Search"
+           [ngTableFiltering]="config.filtering"
+           class="form-control"
+           (tableChanged)="onChangeTable(config)"/>
+  </div>
+</div>
+<br>
+<ng-table [config]="config"
+          (tableChanged)="onChangeTable(config)"
+          (cellClicked)="onCellClick($event)"
+
+          [rows]="rows" [columns]="columns">
+</ng-table>
+<pagination *ngIf="config.paging"
+            class="pagination-sm"
+            [(ngModel)]="page"
+            [totalItems]="length"
+            [itemsPerPage]="itemsPerPage"
+            [maxSize]="maxSize"
+            [boundaryLinks]="true"
+            [rotate]="false"
+            (pageChanged)="onChangeTable(config, $event)"
+            (numPages)="numPages = $event">
+</pagination>
+<pre *ngIf="config.paging" class="card card-block card-header">Page: {{page}} / {{numPages}}</pre>

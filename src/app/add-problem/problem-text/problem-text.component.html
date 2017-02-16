@@ -1,0 +1,82 @@
+<div [formGroup]="ConceptJson">
+  <div class="form-group col-xs-4" style="display: flex;justify-content: center;flex-direction: column">
+    <label >Choose Data Type</label>
+
+    <md-radio-group class="example-radio-group" formControlName="Type" [(ngModel)]="TypeSelected">
+      <md-radio-button class="example-radio-button"  *ngFor="let type of types"  [value]="type">
+        {{type}}
+      </md-radio-button>
+    </md-radio-group>
+    <small [hidden]="ConceptJson.controls.Type.valid" class="text-danger">
+      Type is Required
+    </small>
+  </div>
+
+
+
+  <div class="col-xs-8" *ngIf="TypeSelected=='Text'">
+    <div class="row">
+      <div class="col-xs-6 form-group" style="display: flex;flex-direction: column;justify-content: center;text-align: center">
+        <label>Write Text/Equation</label>
+        <textarea type="text" style="height: 145px" formControlName="Text" [(ngModel)]="conceptPartText"></textarea>
+        <small [hidden]="ConceptJson.controls.Type.valid" class="text-danger">
+
+        </small>
+      </div>
+
+      <div class="col-xs-6" style="word-wrap: break-word;text-align: center">
+        <label>Preview</label>
+
+        <p [innerHTML]="conceptPartText" style="word-wrap: break-word"></p>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-xs-8" *ngIf="TypeSelected=='Image'">
+    <div class="row " style="text-align: center">
+      <div class="col-xs-6 form-group">
+        <div class="button-container">
+          <label class="upload-button is-pulled-left">
+            <input type="file"
+                   class="hidden"
+                   ngFileSelect
+                   [options]="options"
+                   [events]="inputUploadEvents"
+                   (onUpload)="handleUpload($event)"
+                   (onPreviewData)="handlePreviewData($event)"
+                   (beforeUpload)="beforeUpload($event)">
+            <md-icon>attach_file</md-icon>
+          </label>
+        </div>
+
+        <p>
+          Allowed extensions: <code><b>.jpg</b>, <b>.png</b></code>
+        </p>
+
+        <div>
+          <button type="button"  (click)="startUpload()"><md-icon>file_upload</md-icon></button>
+        </div>
+
+      </div>
+
+      <div class="col-xs-6">
+        <div *ngIf="response">
+          <pre><code>{{ response | json }}</code></pre>
+        </div>
+
+        <div *ngIf="errorMessage">
+          <code>{{ errorMessage }}</code>
+        </div>
+
+        <div *ngIf="previewData && !response">
+          <img [src]="previewData" class="img-responsive">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- advanced-demo.component.html -->

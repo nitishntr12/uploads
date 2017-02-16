@@ -1,0 +1,96 @@
+<div  *ngIf="dataGoingToServe" class="loader" style="z-index: 10;position: absolute; left:50%; top: 50%; height: 25%; width: 10%;">
+  <img src="../../assets/loader.gif" style="width: 100%;height: 100%;">
+</div>
+
+<div class="custom-modal" *ngIf="showPopUp" (click)="isShowPopUp($event)">
+  <div class="custom-modal-continer">
+    <div class="box text-center" id="custom-modal-id">
+        <span class = "glyphicon glyphicon-remove pull-right" style="cursor:pointer" (click)="showPopUp=false;"></span>
+        <p>What would you like to do?</p>
+        <button class = "btn pull-left" (click)="showPopUp=false;openAddNewConceptForm()" > Add Concept</button>
+        <button class="btn pull-right" (click) = "showPopUp=false;openAddNewProblemForm()"> Add Problem</button>
+    </div>
+  </div>
+
+</div>
+
+
+<div *ngIf="(!isAddNewTopicFormOpen)&&(!isAddNewConceptFormOpen)&&(!isAddNewProblemFormOpen)" class="container-fluid" xmlns="http://www.w3.org/1999/html">
+<md-card class="row">
+
+  <md-card class="col-sm-5">
+    <md-toolbar  color="accent">
+      <p>Chapters</p>
+      <!--<md-toolbar-row style="display: flex;justify-content: center">Chapters</md-toolbar-row>-->
+
+    </md-toolbar>
+    <app-chapters style="margin-top: 3%" (chapterSelected)="updateChapter($event)"></app-chapters>
+  </md-card>
+
+  <md-card class="col-sm-7">
+    <md-toolbar color="accent">Topics
+      <button md-raised-button color="primary" *ngIf="isButtonAddNewTopicFormOpen==true" (click)="openAddNewTopicForm()" style="margin-left: 284px;">Add Topic</button>
+      <md-toolbar-row *ngIf="!chapterId" >
+        <p style="color: red"> You Must Select a Chapter to see Topics</p></md-toolbar-row>
+
+    </md-toolbar>
+
+    <app-topics  (topicSelected)="updateTopic($event)" [chapterId]="chapterId"  *ngIf="chapterId"></app-topics>
+  </md-card>
+
+</md-card>
+
+</div>
+
+
+<md-card class="container-fluid" *ngIf="((isAddNewTopicFormOpen) &&(!isAddNewConceptFormOpen) &&(!isAddNewProblemFormOpen))" class="addTopicForm">
+  <div>
+    <form [formGroup]="addTopicForm" (ngSubmit)="saveEvent(addTopicForm.value)" novalidate>
+
+      <md-toolbar color="accent">
+        Add Topic
+      </md-toolbar>
+
+      <md-card style="display: flex; flex-direction: column;justify-content: center">
+
+      <div>
+        <p>Chapter Selected is : {{chapterName}}</p>
+
+      </div>
+
+      <md-toolbar color="primary" *ngIf="statusMessage"><md-toolbar-row style="display: flex;justify-content: center">
+        {{statusMessage}}
+      </md-toolbar-row></md-toolbar>
+
+
+
+      <div style="display: none" class="form-group" [ngClass]="{'error': ChapterId?.invalid && ChapterId?.touched}">
+        <input [(ngModel)]="chapterId" formControlName="ChapterId" id="ChapterId"/>
+        <em *ngIf="ChapterId?.invalid && ChapterId?.touched">Required</em>
+      </div>
+
+
+      <div class="form-group" [ngClass]="{'error': Name?.invalid && Name?.touched}">
+        <label for="Name">Topic Name </label>
+        <input formControlName="Name" id="Name" type="text"/>
+        <em *ngIf="Name?.invalid && Name?.touched">Required</em>
+      </div>
+
+
+      <div class="form-group" [ngClass]="{'error': Order?.invalid && Order?.touched}">
+        <label for="Order">Order:</label>
+        <input formControlName="Order" id="Order" type="number"/>
+        <em *ngIf="Order?.invalid && Order?.touched">Required</em>
+      </div>
+
+      <button md-raised-button color="primary" style="width: 15%" type="submit" class="btn btn-primary" [disabled]="addTopicForm.invalid">Save</button>
+      <button style="width: 15%;margin-top: 2%" type="button" class="btn btn-default" (click)="cancel(addTopicForm)">Cancel</button>
+      </md-card>
+    </form>
+  </div>
+</md-card>
+
+
+<app-add-concept *ngIf="(isAddNewConceptFormOpen)&&(!isAddNewTopicFormOpen) &&(!isAddNewProblemFormOpen)" [baseImageUrl]="baseImageUrl" [topicId]="topicId" [topicName]="topicName" (eventCancelClicked)="handleNewConceptCancelled()"></app-add-concept>
+
+<app-add-problem *ngIf="(isAddNewProblemFormOpen) &&(!isAddNewConceptFormOpen)&&(!isAddNewTopicFormOpen)" [baseImageUrl]="baseImageUrl" [topicId]="topicId" [topicName]="topicName" (eventCancelClicked)="handleNewProblemCancelled()"></app-add-problem>

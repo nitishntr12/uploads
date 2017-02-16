@@ -1,1 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/core/theming/prebuilt/deeppurple-amber.css';
+td{
+  cursor: pointer !important;
+}
+
+td:hover{
+  color: #e15960;
+}
+
+td:active{
+  color: #e15960;
+}
+
+td:visited{
+  color: #e15960;
+}
+
+.red-text{
+  color: #e15960 !important;
+}
+
+/*md-toolbar-row{*/
+  /*display: flex;*/
+  /*justify-content: center;*/
+/*}*/
+
+md-toolbar-row.md-icon{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+md-toolbar-row{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
