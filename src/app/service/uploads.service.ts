@@ -7,13 +7,13 @@ import {Topic} from "../add-topic/topic";
 @Injectable()
 export class UploadsService {
 
-  getChaptersUrl="http://mistu.org/etutor/admin/getChapters.php/";
-  getTopicsUrl="http://mistu.org/etutor/admin/getTopicsbyChapterId.php";
-  addTopicUrl="http://mistu.org/etutor/admin/insertTopic.php";
-  addConceptUrl="http://mistu.org/etutor/admin/insertNewConcept.php";
-  addProblemUrl="http://mistu.org/etutor/admin/insertNewProblem.php";
-  baseImageConceptUrl="http://mistu.org/etutor/admin/getConceptsBaseImageUrl.php";
-  baseImageProblemUrl="http://mistu.org/etutor/admin/getProblemsBaseImageUrl.php";
+  getChaptersUrl="https://mistu.org/etutor/admin/getChapters.php/";
+  getTopicsUrl="https://mistu.org/etutor/admin/getTopicsbyChapterId.php";
+  addTopicUrl="https://mistu.org/etutor/admin/insertTopic.php";
+  addConceptUrl="https://mistu.org/etutor/admin/insertNewConcept.php";
+  addProblemUrl="https://mistu.org/etutor/admin/insertNewProblem.php";
+  baseImageConceptUrl="https://mistu.org/etutor/admin/getConceptsBaseImageUrl.php";
+  baseImageProblemUrl="https://mistu.org/etutor/admin/getProblemsBaseImageUrl.php";
 
   constructor(private http:Http) { }
 

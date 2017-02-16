@@ -1,44 +1,50 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {UploadsService} from "../../service/uploads.service";
-import {Topic} from "../topic";
+import {Component, OnInit,ElementRef, HostListener} from '@angular/core';
+import {UploadsService} from "../service/uploads.service";
+import {Chapter} from "../add-topic/chapter";
+import {FormHelperService} from "../service/form-helper.service";
 
 @Component({
-  selector: 'app-topics',
-  templateUrl: './topics.component.html',
-  styleUrls: ['./topics.component.css']
+  selector: 'app-chapters',
+  templateUrl: 'chapters.component.html',
+  styleUrls: ['chapters.component.css']
 })
-export class TopicsComponent implements OnInit {
+export class ChaptersComponent implements OnInit {
 
-  @Input() chapterId:number;
-  @Output() topicSelected=new EventEmitter();
-  constructor(private uploadService:UploadsService) {
+  constructor(private uploadService:UploadsService,private eRef: ElementRef) {
     this.length = this.data.length;
   }
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if(event.toElement.nodeName == 'TD'){
+      let trElements = event.target.parentNode.parentNode.children;
+      for(let i=0;i<trElements.length;i++){
+        for(let j=0;j<trElements[i].children.length;j++){
+          trElements[i].children[j].className = "";
+        }
+        //trElements[i].children[1].className = "";
+      }
+     // debugger;
 
+      for( let x=0;x<event.target.parentNode.children.length;x++){
+        event.target.parentNode.children[x].className = "red-text ";
+      }
 
-  ngOnChanges(){
-    this.data.length=0;
-    this.uploadService.getTopicsList(this.chapterId)
-      .subscribe(topics=>{this.data=topics;
-          this.onChangeTable(this.config)},
-        error=>this.errorMessage=<any>error);
+    }
   }
-
-  private data:Topic[]=[];
+  private data:Chapter[]=[];
 
   errorMessage:string;
   ngOnInit() {
-    console.log("Inside NG On Init topics");
 
+    console.log("Inside NG On Init Chpters");
+    this.uploadService.getChaptersList()
+      .subscribe(chapters=>{this.data=chapters;this.onChangeTable(this.config)}, error=>this.errorMessage=<any>error);
   }
 
   public rows:Array<any> = [];
   public columns:Array<any> = [
-    {title: 'Id', name: 'Id'},
-    {title: 'Name', name: 'Name',},
-    {title:'Order',name:'Order'},
-    {title:'IsCompetition',name:'IsCompetition'},
-    {title:'IsBoard',name:'IsBoard'}
+    {title: 'Chapter Id', name: 'Id'},
+    {title: 'Chapter Name', name: 'Name',},
   ];
 
 
@@ -146,8 +152,10 @@ export class TopicsComponent implements OnInit {
 
   public onCellClick(data: any): any {
     console.log(data);
-    console.log("Emmiting an event to upadate Topic Id");
-    this.topicSelected.emit(data.row);
+    FormHelperService.chapterId=data.row.Id;
+    FormHelperService.chapterName=data.row.Name;
   }
+
+
 
 }

@@ -13,8 +13,8 @@ import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import 'hammerjs';
 import { Ng2TableModule } from 'ng2-table/ng2-table';
 import {PaginationModule, PopoverModule} from "ng2-bootstrap";
-import { ChaptersComponent } from './add-topic/chapters/chapters.component';
-import { TopicsComponent } from './add-topic/topics/topics.component';
+import { ChaptersComponent } from './chapters/chapters.component';
+import { TopicsComponent } from './topics/topics.component';
 import { AddConceptComponent } from './add-concept/add-concept.component';
 import { ConceptTextComponent } from './add-concept/concept-text/concept-text.component';
 import {NgUploaderModule} from "ngx-uploader";
@@ -22,6 +22,7 @@ import {FormHelperService} from "./service/form-helper.service";
 import {LoginService} from "./service/login.service";
 import { AddProblemComponent } from './add-problem/add-problem.component';
 import { ProblemTextComponent } from './add-problem/problem-text/problem-text.component';
+import { HomeComponent } from './home/home.component';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { ProblemTextComponent } from './add-problem/problem-text/problem-text.co
     ConceptTextComponent,
     AddProblemComponent,
     ProblemTextComponent,
+    HomeComponent,
 
   ],
   imports: [
@@ -51,10 +53,8 @@ import { ProblemTextComponent } from './add-problem/problem-text/problem-text.co
     PopoverModule.forRoot()
 
   ],
-  providers: [UploadsService,LoginService],
+  providers: [UploadsService,LoginService,FormHelperService],
   bootstrap: [AppComponent],
-
-
 
 })
 export class AppModule { }

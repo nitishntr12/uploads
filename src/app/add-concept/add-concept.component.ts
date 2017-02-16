@@ -1,6 +1,8 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {FormArray, Validators, FormGroup, FormBuilder} from "@angular/forms";
 import {UploadsService} from "../service/uploads.service";
+import {Route, Router} from "@angular/router";
+import {FormHelperService} from "../service/form-helper.service";
 
 @Component({
   selector: 'app-add-concept',
@@ -9,17 +11,11 @@ import {UploadsService} from "../service/uploads.service";
 })
 export class AddConceptComponent implements OnInit {
   public myForm: FormGroup;
-  @Input() baseImageUrl;
-  @Input() topicId;
-  @Input() topicName="Must Select a topic to proceed";
-  @Output() eventCancelClicked=new EventEmitter();
   dataGoingToServer=false;
   response:string;
   errorMessge:any;
   GreetingMessage:string;
-
-
-  constructor(private _fb: FormBuilder,private uploadService:UploadsService) {
+  constructor(private _fb: FormBuilder,private uploadService:UploadsService,private router:Router) {
 
   }
 
@@ -27,11 +23,11 @@ export class AddConceptComponent implements OnInit {
 
     this.myForm = this._fb.group({
       Name: ['', [Validators.required, Validators.minLength(5)]],
-      TopicId:[this.topicId,Validators.required],
+      TopicId:[FormHelperService.topicId,Validators.required],
       Order:['',Validators.required],
       Description:[''],
       QuestionTag:[''],
-      BaseImageUrl:[this.baseImageUrl,Validators.required],
+      BaseImageUrl:[FormHelperService.baseImageUrl,Validators.required],
       ConceptJson: this._fb.array([])
     });
 
@@ -93,7 +89,10 @@ export class AddConceptComponent implements OnInit {
 
   cancelClicked(){
     this.myForm.reset();
-    this.eventCancelClicked.emit();
+    this.router.navigate(['/home']);
+  }
 
+  getTopicName(){
+    return FormHelperService.topicName;
   }
 }

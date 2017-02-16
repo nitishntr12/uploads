@@ -1,0 +1,26 @@
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+  <md-card class="row">
+
+    <md-card class="col-sm-5">
+      <md-toolbar  color="accent">
+        <p>Chapters</p>
+        <!--<md-toolbar-row style="display: flex;justify-content: center">Chapters</md-toolbar-row>-->
+
+      </md-toolbar>
+      <app-chapters style="margin-top: 3%"></app-chapters>
+    </md-card>
+
+    <md-card class="col-sm-7">
+      <md-toolbar color="accent">Topics
+        <button md-raised-button color="primary" *ngIf="getChapterId()" (click)="openAddNewTopicForm()" style="margin-left: 284px;">Add Topic</button>
+        <md-toolbar-row *ngIf="!getChapterId()" >
+          <p style="color: red"> You Must Select a Chapter to see Topics</p></md-toolbar-row>
+
+      </md-toolbar>
+
+      <app-topics  *ngIf="getChapterId()"></app-topics>
+    </md-card>
+
+  </md-card>
+
+</div>

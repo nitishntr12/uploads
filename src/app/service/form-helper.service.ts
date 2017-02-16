@@ -4,12 +4,13 @@ import {UploadsService} from "./uploads.service";
 @Injectable()
 export class FormHelperService {
 
-  constructor(private uploaderService:UploadsService) { }
+  constructor() { }
 
-  public static chapterId:number=5;
-  public static chapterName:string="alcohol";
-  public static topicId:number=194;
-  public static topicName:string="cannizaro";
+  public static chapterId:number;
+  public static chapterName:string;
+  public static topicId:number;
+  public static topicName:string;
+  public static baseImageUrl:string;
 
 
 }

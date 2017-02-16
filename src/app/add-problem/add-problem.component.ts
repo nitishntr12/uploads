@@ -1,6 +1,8 @@
 import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
 import {FormGroup, FormBuilder, Validators, FormControl, FormArray} from "@angular/forms";
 import {UploadsService} from "../service/uploads.service";
+import {Router} from "@angular/router";
+import {FormHelperService} from "../service/form-helper.service";
 
 @Component({
   selector: 'app-add-problem',
@@ -10,10 +12,6 @@ import {UploadsService} from "../service/uploads.service";
 export class AddProblemComponent implements OnInit {
 
   public addProblemForm:FormGroup;
-  @Input() baseImageUrl;
-  @Input() topicId;
-  @Input() topicName="Must Select a topic to proceed";
-  @Output() eventCancelClicked=new EventEmitter();
   dataGoingToServer=false;
   response:string;
   errorMessge:any;
@@ -28,7 +26,7 @@ export class AddProblemComponent implements OnInit {
   keys=['A','B','C','D'];
   levels=['1','2','3'];
 
-  constructor(private _fb:FormBuilder,private uploadService:UploadsService) { }
+  constructor(private _fb:FormBuilder,private uploadService:UploadsService,private router:Router) { }
 
   ngDoCheck(){
     console.log("value changed"+this.TypeSelected);
@@ -42,13 +40,13 @@ export class AddProblemComponent implements OnInit {
   ngOnInit() {
     this.addProblemForm=this._fb.group({
       Name:['',[Validators.required,Validators.minLength(5)]],
-      TopicId:[5,[Validators.required]],
+      TopicId:[FormHelperService.topicId,[Validators.required]],
       Order:['',Validators.required],
       Description:[''],
       QuestionTag:[''],
       Level:['',Validators.required],
       TypeOfQuestion:['',Validators.required],
-      BaseImageUrl:[this.baseImageUrl,Validators.required],
+      BaseImageUrl:[FormHelperService.baseImageUrl,Validators.required],
       ProblemJson: this._fb.group({
         QuestionText:this._fb.array([]),
         Option1Text:this._fb.array([]),
@@ -162,9 +160,6 @@ export class AddProblemComponent implements OnInit {
     this.uploadService.addProblem(model)
       .subscribe(response=>{this.response=response;
         this.dataGoingToServer=false;this.setGreetingMessage();
-      this.uploadService.getProblemsBaseImageUrl(this.topicId)
-        .subscribe(response=>this.baseImageUrl=response["baseImageUrl"],error=>this.errorMessge=<any>error)
-
       }, error=>this.errorMessge=<any>error);
     console.log(JSON.stringify(this.response));
 
@@ -173,7 +168,7 @@ export class AddProblemComponent implements OnInit {
 
   setGreetingMessage(){
     if(this.response["Success"]=="OK"){
-      this.GreetingMessage="Success, Select a new Topic To add new Concept"
+      this.GreetingMessage="Success, Go Back and select a Topic To add new Concept"
       this.addProblemForm.reset();
     }else {
       this.GreetingMessage="OOOps, Some error occured, try again!!";
@@ -183,8 +178,7 @@ export class AddProblemComponent implements OnInit {
 
   cancelClicked(){
     this.addProblemForm.reset();
-    this.eventCancelClicked.emit();
-
+    this.router.navigate(['/home']);
   }
 
 }

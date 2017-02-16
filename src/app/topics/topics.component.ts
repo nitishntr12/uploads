@@ -1,50 +1,88 @@
-import {Component, OnInit, Output, EventEmitter,ElementRef, HostListener} from '@angular/core';
-import {Chapter} from "../chapter";
-import {UploadsService} from "../../service/uploads.service";
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {FormHelperService} from "../service/form-helper.service";
+import {UploadsService} from "../service/uploads.service";
+import {Topic} from "../add-topic/topic";
+import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-chapters',
-  templateUrl: './chapters.component.html',
-  styleUrls: ['./chapters.component.css']
+  selector: 'app-topics',
+  templateUrl: 'topics.component.html',
+  styleUrls: ['topics.component.css']
 })
-export class ChaptersComponent implements OnInit {
+export class TopicsComponent implements OnInit {
 
-  @Output() chapterSelected=new EventEmitter();
-  constructor(private uploadService:UploadsService,private eRef: ElementRef) {
+  constructor(private uploadService:UploadsService,private router:Router) {
     this.length = this.data.length;
   }
-  @HostListener('document:click', ['$event'])
-  clickout(event) {
-    if(event.toElement.nodeName == 'TD'){
-      let trElements = event.target.parentNode.parentNode.children;
-      for(let i=0;i<trElements.length;i++){
-        for(let j=0;j<trElements[i].children.length;j++){
-          trElements[i].children[j].className = "";
-        }
-        //trElements[i].children[1].className = "";
-      }
-     // debugger;
 
-      for( let x=0;x<event.target.parentNode.children.length;x++){
-        event.target.parentNode.children[x].className = "red-text ";
-      }
+  private data:Topic[]=[];
+  private showPopUp:boolean=false;
+  private dataGoingToServer=false;
 
-    }
-  }
-  private data:Chapter[]=[];
 
   errorMessage:string;
   ngOnInit() {
+    console.log("Inside NG On Init topics");
+    this.data.length=0;
+    this.uploadService.getTopicsList(FormHelperService.chapterId)
+      .subscribe(topics=>{this.data=topics;
+          this.onChangeTable(this.config)},
+        error=>this.errorMessage=<any>error);
 
-    console.log("Inside NG On Init Chpters");
-    this.uploadService.getChaptersList()
-      .subscribe(chapters=>{this.data=chapters;this.onChangeTable(this.config)}, error=>this.errorMessage=<any>error);
   }
+
+  public onCellClick(data: any) {
+    this.showPopUp=true;
+    console.log("Tables on cell Clicked");
+    FormHelperService.topicId=data.row.Id;
+    FormHelperService.topicName=data.row.Name;
+  }
+
+  isShowPopUp(event){
+
+    console.log("IS show popup event called");
+
+    let element = document.getElementById('custom-modal-id');
+    if(element && element.contains(event.target)){
+      this.showPopUp = true;
+    }
+    else {
+      this.showPopUp = false;
+    }
+  }
+
+  openAddNewConceptForm(){
+    this.dataGoingToServer=true;
+    //console.log("Open add new Concept form Clicked");
+    this.uploadService.getConceptsBaseImageUrl(FormHelperService.topicId)
+      .subscribe(result=>{FormHelperService.baseImageUrl=result["baseImageUrl"];
+          this.dataGoingToServer=false;
+          this.router.navigate(['/concept'])},
+        error=>this.errorMessage=<any>error);
+  }
+
+
+  openAddNewProblemForm(){
+    this.dataGoingToServer=true;
+    //console.log("Open add new Problem form Clicked");
+    this.uploadService.getProblemsBaseImageUrl(FormHelperService.topicId)
+      .subscribe(result=>{FormHelperService.baseImageUrl=result["baseImageUrl"];
+          this.dataGoingToServer=false;
+          this.router.navigate(['/problem'])
+
+        },
+        error=>this.errorMessage=<any>error);
+
+  }
+
 
   public rows:Array<any> = [];
   public columns:Array<any> = [
-    {title: 'Chapter Id', name: 'Id'},
-    {title: 'Chapter Name', name: 'Name',},
+    {title: 'Id', name: 'Id'},
+    {title: 'Name', name: 'Name',},
+    {title:'Order',name:'Order'},
+    {title:'IsCompetition',name:'IsCompetition'},
+    {title:'IsBoard',name:'IsBoard'}
   ];
 
 
@@ -150,10 +188,6 @@ export class ChaptersComponent implements OnInit {
     this.length = sortedData.length;
   }
 
-  public onCellClick(data: any): any {
-    console.log(data);
-    this.chapterSelected.emit(data.row);
-  }
 
 
 }

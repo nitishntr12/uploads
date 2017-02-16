@@ -2,48 +2,9 @@
   <img src="../../assets/loader.gif" style="width: 100%;height: 100%;">
 </div>
 
-<div class="custom-modal" *ngIf="showPopUp" (click)="isShowPopUp($event)">
-  <div class="custom-modal-continer">
-    <div class="box text-center" id="custom-modal-id">
-        <span class = "glyphicon glyphicon-remove pull-right" style="cursor:pointer" (click)="showPopUp=false;"></span>
-        <p>What would you like to do?</p>
-        <button class = "btn pull-left" (click)="showPopUp=false;openAddNewConceptForm()" > Add Concept</button>
-        <button class="btn pull-right" (click) = "showPopUp=false;openAddNewProblemForm()"> Add Problem</button>
-    </div>
-  </div>
-
-</div>
 
 
-<div *ngIf="(!isAddNewTopicFormOpen)&&(!isAddNewConceptFormOpen)&&(!isAddNewProblemFormOpen)" class="container-fluid" xmlns="http://www.w3.org/1999/html">
-<md-card class="row">
-
-  <md-card class="col-sm-5">
-    <md-toolbar  color="accent">
-      <p>Chapters</p>
-      <!--<md-toolbar-row style="display: flex;justify-content: center">Chapters</md-toolbar-row>-->
-
-    </md-toolbar>
-    <app-chapters style="margin-top: 3%" (chapterSelected)="updateChapter($event)"></app-chapters>
-  </md-card>
-
-  <md-card class="col-sm-7">
-    <md-toolbar color="accent">Topics
-      <button md-raised-button color="primary" *ngIf="isButtonAddNewTopicFormOpen==true" (click)="openAddNewTopicForm()" style="margin-left: 284px;">Add Topic</button>
-      <md-toolbar-row *ngIf="!chapterId" >
-        <p style="color: red"> You Must Select a Chapter to see Topics</p></md-toolbar-row>
-
-    </md-toolbar>
-
-    <app-topics  (topicSelected)="updateTopic($event)" [chapterId]="chapterId"  *ngIf="chapterId"></app-topics>
-  </md-card>
-
-</md-card>
-
-</div>
-
-
-<md-card class="container-fluid" *ngIf="((isAddNewTopicFormOpen) &&(!isAddNewConceptFormOpen) &&(!isAddNewProblemFormOpen))" class="addTopicForm">
+<md-card class="container-fluid addTopicForm">
   <div>
     <form [formGroup]="addTopicForm" (ngSubmit)="saveEvent(addTopicForm.value)" novalidate>
 
@@ -54,8 +15,7 @@
       <md-card style="display: flex; flex-direction: column;justify-content: center">
 
       <div>
-        <p>Chapter Selected is : {{chapterName}}</p>
-
+        <p>Chapter Selected is : {{getChapterName()}}</p>
       </div>
 
       <md-toolbar color="primary" *ngIf="statusMessage"><md-toolbar-row style="display: flex;justify-content: center">
@@ -89,8 +49,3 @@
     </form>
   </div>
 </md-card>
-
-
-<app-add-concept *ngIf="(isAddNewConceptFormOpen)&&(!isAddNewTopicFormOpen) &&(!isAddNewProblemFormOpen)" [baseImageUrl]="baseImageUrl" [topicId]="topicId" [topicName]="topicName" (eventCancelClicked)="handleNewConceptCancelled()"></app-add-concept>
-
-<app-add-problem *ngIf="(isAddNewProblemFormOpen) &&(!isAddNewConceptFormOpen)&&(!isAddNewTopicFormOpen)" [baseImageUrl]="baseImageUrl" [topicId]="topicId" [topicName]="topicName" (eventCancelClicked)="handleNewProblemCancelled()"></app-add-problem>

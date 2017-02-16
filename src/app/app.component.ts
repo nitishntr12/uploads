@@ -1,18 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import {FormHelperService} from "./service/form-helper.service";
+import {UploadsService} from "./service/uploads.service";
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers:[FormHelperService]
 })
-export class AppComponent implements OnInit{
-  ngOnInit(): void {
-    this.router.navigate(['home']);
-  }
+export class AppComponent {
 
-  constructor(private router:Router){
 
-  }
-  title = 'app works!';
 }

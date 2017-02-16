@@ -1,8 +1,8 @@
-import { Component, OnInit,ElementRef, HostListener} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import {UploadsService} from "../service/uploads.service";
-import {FormGroup, FormControl, Validators} from "@angular/forms";
+import {FormGroup,Validators, FormBuilder} from "@angular/forms";
 import {FormHelperService} from "../service/form-helper.service";
-import {MdDialogRef, MdDialog} from "@angular/material";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-add-topic',
@@ -11,110 +11,26 @@ import {MdDialogRef, MdDialog} from "@angular/material";
 })
 export class AddTopicComponent implements OnInit {
 
-  chapterId:number;
-  chapterName:string="Select a chapter from the table to add a topic";
-  topicId:number;
-  topicName:string;
   statusTopicAdded=false;
   errorMessage:string;
   baseImageUrl:string;
 
-  isAddNewTopicFormOpen=false;
-  isAddNewConceptFormOpen=false;
-  isAddNewProblemFormOpen=false;
-
-  isButtonAddNewTopicFormOpen=false;
-
   dataGoingToServe=false;
   private statusMessage: string;
 
-
-  updateChapter(chapter){
-    this.chapterId=chapter.Id;
-    this.chapterName=chapter.Name;
-    //console.log("chapter Id is "+this.chapterId + "and Name is "+ this.chapterName);
-    this.isButtonAddNewTopicFormOpen=true;
-  }
-
-  updateTopic(topic){
-    this.showPopUp = true;
-    this.topicId=topic.Id;
-    this.topicName=topic.Name;
-    //console.log("Topic Id is "+ this.topicId +"and Topic Name is "+ this.topicName);
-  }
-
-  ngOnChanges(){
-
-  }
-
-  openAddNewTopicForm(){
-    //console.log("Open add new Form clicked");
-    this.isAddNewTopicFormOpen=true;
-    this.isAddNewConceptFormOpen=false;
-    this.isAddNewProblemFormOpen=false;
-  }
-
-  openAddNewConceptForm(){
-    this.dataGoingToServe=true;
-    //console.log("Open add new Concept form Clicked");
-    this.uploadService.getConceptsBaseImageUrl(this.topicId)
-      .subscribe(result=>{this.baseImageUrl=result["baseImageUrl"];
-          this.isAddNewConceptFormOpen=true;
-          this.isAddNewTopicFormOpen=false;
-          this.isAddNewProblemFormOpen=false;
-           this.dataGoingToServe=false},
-        error=>this.errorMessage=<any>error);
-  }
-
-
-  openAddNewProblemForm(){
-    this.dataGoingToServe=true;
-    //console.log("Open add new Problem form Clicked");
-    this.uploadService.getProblemsBaseImageUrl(this.topicId)
-      .subscribe(result=>{this.baseImageUrl=result["baseImageUrl"];
-          this.isAddNewProblemFormOpen=true;
-          this.dataGoingToServe=false;
-          this.isAddNewConceptFormOpen=false;
-          this.isAddNewTopicFormOpen=false;
-          },
-        error=>this.errorMessage=<any>error);
-
-  }
-
-
-  showBaseImageUrl(){
-    //console.log("Inside add Topic Componnet ,Base Image Url is : "+this.baseImageUrl);
-  }
-
   addTopicForm: FormGroup;
-  ChapterId:FormControl=new FormControl('',Validators.required)
-  Name: FormControl = new FormControl('', Validators.required)
-  Order: FormControl = new FormControl('', Validators.required)
-  showPopUp:boolean = false;
 
-  constructor(private uploadService:UploadsService) {
+  constructor(private uploadService:UploadsService,private router:Router,private fb:FormBuilder) {
 
   }
-
-
-  isShowPopUp(event){
-    let element = document.getElementById('custom-modal-id');
-    if(element && element.contains(event.target)){
-      this.showPopUp = true;
-    }
-    else {
-      this.showPopUp = false;
-    }
-  }
-
-
 
   ngOnInit() {
-    this.addTopicForm= new FormGroup({
-      ChapterId:this.ChapterId,
-      Name: this.Name,
-      Order: this.Order
+    this.addTopicForm=this.fb.group({
+      ChapterId:[FormHelperService.chapterId,Validators.required],
+      Name:['',Validators.required],
+      Order:['',Validators.required]
     })
+
   }
 
   saveEvent(addTopicFormData) {
@@ -137,22 +53,15 @@ export class AddTopicComponent implements OnInit {
   }
 
   cancel(form) {
-    this.closeAllForm();
-    this.statusMessage=null;
+    this.addTopicForm.reset();
+    this.router.navigate(['/home']);
   }
 
-  handleNewConceptCancelled(){
-    this.closeAllForm();
+  getChapterName(){
+    return FormHelperService.chapterName;
   }
-
-  handleNewProblemCancelled(){
-    this.closeAllForm();
-  }
-
-  closeAllForm(){
-    this.isAddNewTopicFormOpen=false;
-    this.isAddNewProblemFormOpen=false;
-    this.isAddNewConceptFormOpen=false;
+  getChapterId(){
+    return FormHelperService.chapterId;
   }
 
 

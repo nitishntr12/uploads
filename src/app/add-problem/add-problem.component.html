@@ -246,7 +246,7 @@
 
         <div style="margin: 2%">
           <button style="margin-left: 20%" md-raised-button color="primary" type="submit"  [disabled]="!addProblemForm.valid">Submit</button>
-          <button style="margin-left: 46%" md-raised-button color="warn" (click)="cancelClicked()" >Cancel</button>
+          <button style="margin-left: 46%" md-raised-button color="warn" (click)="cancelClicked()" >Go Back</button>
         </div>
 
         <div class="clearfix"></div>
@@ -256,7 +256,7 @@
 
           <div>addProblemForm details:-</div>
           <pre>Is addProblemForm valid?: <br>{{addProblemForm.valid | json}}</pre>
-          <pre>form value: <br>{{addProblemForm.value | json}}</pre>
+          <!--<pre>form value: <br>{{addProblemForm.value | json}}</pre>-->
         </div>
 
       </form>
